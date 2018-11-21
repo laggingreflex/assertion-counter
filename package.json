@@ -1,0 +1,7 @@
+{
+  "name": "assertion-counter",
+  "version": "0.0.0",
+  "description": "Assertion counter with some unique features",
+  "main": "index.js",
+  "repository": "laggingreflex/assertion-counter"
+}
