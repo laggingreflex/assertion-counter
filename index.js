@@ -3,13 +3,19 @@ module.exports = (total, _done) => {
     throw new Error('Need a number between 1 and Infinity');
   }
 
+  if (!_done) {
+    count.promise = new Promise((resolve, reject) => {
+      _done = error => error ? reject(error) : resolve();
+    });
+  }
+
   let counter = 0;
   const lastCallResults = [];
 
   let doneCalled;
   const done = e => {
     // console.log(`done called`, { counter, total, e });
-    counter++;
+    counter++
     if (e) {
       return _done(e);
     } else if (counter > total) {
@@ -20,8 +26,8 @@ module.exports = (total, _done) => {
     }
   };
 
-  return fn => {
-    // console.log(`ok called`, { counter, total, fn });
+  function count(fn) {
+    // console.log(`count called`, { counter, total, fn });
     if (typeof fn !== 'function') {
       return done(fn);
     }
@@ -34,7 +40,7 @@ module.exports = (total, _done) => {
           lastCallResults.unshift(callResult);
           done();
           return callResult;
-        }).catch(done);
+        }).catch(done)
       } else {
         done();
         return callResult;
@@ -43,4 +49,6 @@ module.exports = (total, _done) => {
       done(error);
     }
   }
+
+  return count;
 }

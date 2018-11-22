@@ -15,6 +15,8 @@ const counter = require('assertion-counter')
 
 it('should count assertions', (done) => {
   const ok = counter(5, done);
+  // or without done
+  const ok = counter(5); // then return ok.promise
 
   ok()
 
