@@ -1,29 +1,46 @@
-module.exports = (total, done) => {
+module.exports = (total, _done) => {
   if (!total || isNaN(total) || total < 1 || total >= Infinity) {
     throw new Error('Need a number between 1 and Infinity');
   }
 
   let counter = 0;
-  let doneCalled = false;
   const lastCallResults = [];
 
-  return async (error) => {
+  let doneCalled;
+  const done = e => {
+    // console.log(`done called`, { counter, total, e });
     counter++;
-    if (typeof error === 'function') try {
-      const fn = error;
-      error = null;
-      const callResult = await fn(...lastCallResults);
-      lastCallResults.unshift(callResult);
-    } catch (e) {
-      error = e;
-    }
-    if (error) {
-      done(error);
+    if (e) {
+      return _done(e);
     } else if (counter > total) {
-      done(new Error(`Assertion counter called ${counter - total} too many times (${counter}/${total})`));
+      _done(new Error(`Counter called too many times (${counter}/${total})`));
     } else if (counter === total && !doneCalled) {
       doneCalled = true;
-      done();
+      return _done();
+    }
+  };
+
+  return fn => {
+    // console.log(`ok called`, { counter, total, fn });
+    if (typeof fn !== 'function') {
+      return done(fn);
+    }
+
+    try {
+      const callResult = fn(...lastCallResults);
+      lastCallResults.unshift(callResult);
+      if (callResult && callResult.then) {
+        return callResult.then(callResult => {
+          lastCallResults.unshift(callResult);
+          done();
+          return callResult;
+        }).catch(done);
+      } else {
+        done();
+        return callResult;
+      }
+    } catch (error) {
+      done(error);
     }
   }
 }
