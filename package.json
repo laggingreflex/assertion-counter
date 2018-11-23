@@ -3,5 +3,11 @@
   "version": "0.2.0",
   "description": "Assertion counter with some unique features",
   "main": "index.js",
-  "repository": "laggingreflex/assertion-counter"
+  "repository": "laggingreflex/assertion-counter",
+  "scripts": {
+    "test": "mochista"
+  },
+  "devDependencies": {
+    "mochista": "^0.20.2"
+  }
 }
