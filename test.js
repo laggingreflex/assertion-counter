@@ -53,7 +53,7 @@ describe('promise', () => {
   });
   describe('error', () => {
     it('throw', () => {
-      return assert.rejects(() => {
+      return assert.throws(() => {
         const count = counter(1);
         count(new Error);
         return count.promise;
@@ -138,7 +138,7 @@ describe('fn', () => {
     });
     describe('error', () => {
       it('throw', () => {
-        return assert.rejects(() => {
+        return assert.throws(() => {
           const count = counter(2);
           count(() => { throw new Error });
           return count.promise;

@@ -13,13 +13,16 @@ module.exports = (total, _done) => {
   const lastCallResults = [];
 
   let doneCalled;
-  const done = e => {
-    // console.log(`done called`, { counter, total, e });
-    counter++
-    if (e) {
-      return _done(e);
+  const done = error => {
+    counter++;
+    if (error) {
+      _done(error);
+      throw error
+      // return _done(e);
     } else if (counter > total) {
-      _done(new Error(`Counter called too many times (${counter}/${total})`));
+      error = new Error(`Counter called too many times (${counter}/${total})`);
+      _done(error);
+      throw error;
     } else if (counter === total && !doneCalled) {
       doneCalled = true;
       return _done();
